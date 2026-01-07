@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { List, MagnifyingGlass, Microphone, User, ShoppingCart } from '@phosphor-icons/react'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
@@ -7,13 +7,13 @@ import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
 export function Header() {
   const [isScrolled, setIsScrolled] = useState(false)
 
-  useState(() => {
+  useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 10)
     }
     window.addEventListener('scroll', handleScroll)
     return () => window.removeEventListener('scroll', handleScroll)
-  })
+  }, [])
 
   return (
     <header 
