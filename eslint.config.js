@@ -1,4 +1,3 @@
-// eslint.config.js
 import js from "@eslint/js";
 import tseslint from "typescript-eslint";
 import react from "eslint-plugin-react";
@@ -6,16 +5,14 @@ import reactHooks from "eslint-plugin-react-hooks";
 import globals from "globals";
 
 export default [
-  // Ignore folders
   { ignores: ["dist/**", "build/**", "node_modules/**"] },
 
-  // Base JS rules
   js.configs.recommended,
 
-  // TypeScript + TSX rules (this is the key part)
+  // TS + TSX support
   ...tseslint.configs.recommended,
 
-  // Apply to TS/TSX
+  // React/TSX files
   {
     files: ["**/*.{ts,tsx}"],
     languageOptions: {
@@ -27,18 +24,30 @@ export default [
       },
       globals: {
         ...globals.browser,
-        ...globals.node,
       },
     },
     plugins: {
       react,
       "react-hooks": reactHooks,
     },
-    settings: {
-      react: { version: "detect" },
-    },
+    settings: { react: { version: "detect" } },
     rules: {
       ...reactHooks.configs.recommended.rules,
+    },
+  },
+
+  // Node config files (Tailwind/Vite/etc)
+  {
+    files: [
+      "tailwind.config.*",
+      "postcss.config.*",
+      "vite.config.*",
+      "*.config.{js,cjs,mjs}",
+    ],
+    languageOptions: {
+      globals: {
+        ...globals.node,
+      },
     },
   },
 ];
