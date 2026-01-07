@@ -41,15 +41,19 @@ export function OrbitRing({ radius, products, scrollProgress, ringIndex }: Orbit
       <mesh 
         ref={ringRef} 
         rotation={[Math.PI / 2, 0, 0]}
-        castShadow={false}
-        receiveShadow={false}
+        castShadow
+        receiveShadow
       >
         <torusGeometry args={[radius, 0.01, 16, 64]} />
-        <meshBasicMaterial 
+        <meshStandardMaterial 
           color="#00ffff"
           transparent
           opacity={opacity * 0.3}
           toneMapped={false}
+          emissive="#00ffff"
+          emissiveIntensity={0.2}
+          roughness={0.2}
+          metalness={0.9}
         />
       </mesh>
 

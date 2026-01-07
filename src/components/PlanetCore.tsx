@@ -119,17 +119,18 @@ function VideoSphere({ scrollProgress }: { scrollProgress: number }) {
       ref={meshRef}
       onPointerOver={() => setIsHovered(true)}
       onPointerOut={() => setIsHovered(false)}
-      castShadow={false}
-      receiveShadow={false}
+      castShadow
+      receiveShadow
     >
       <sphereGeometry args={[1.5, isMobile ? 32 : 64, isMobile ? 32 : 64]} />
       <meshStandardMaterial
         map={textureToUse || undefined}
         toneMapped={false}
-        roughness={0.35}
-        metalness={0.6}
+        roughness={0.4}
+        metalness={0.7}
         emissive="#ffffff"
-        emissiveIntensity={0.4}
+        emissiveIntensity={0.3}
+        envMapIntensity={1.2}
       />
     </mesh>
   )
@@ -145,7 +146,7 @@ function WireframeFallback() {
   })
 
   return (
-    <mesh ref={meshRef} castShadow={false} receiveShadow={false}>
+    <mesh ref={meshRef} castShadow receiveShadow>
       <sphereGeometry args={[1.5, 32, 32]} />
       <meshBasicMaterial
         color="#00ffff"

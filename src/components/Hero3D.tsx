@@ -71,24 +71,63 @@ export function Hero3D() {
             camera={{ position: [0, 0, 5], fov: 50 }}
             gl={{ antialias: true, alpha: true }}
             dpr={[1, 2]}
+            shadows
           >
-            <ambientLight intensity={0.2} />
-            <directionalLight position={[10, 10, 5]} intensity={2.0} castShadow={false} />
+            <ambientLight intensity={0.15} />
+            <hemisphereLight 
+              color="#ffffff" 
+              groundColor="#000000" 
+              intensity={0.3}
+              position={[0, 1, 0]}
+            />
+            <directionalLight 
+              position={[10, 10, 5]} 
+              intensity={1.8} 
+              castShadow 
+              shadow-mapSize={[1024, 1024]}
+              shadow-camera-far={50}
+              shadow-camera-left={-10}
+              shadow-camera-right={10}
+              shadow-camera-top={10}
+              shadow-camera-bottom={-10}
+            />
+            <pointLight 
+              position={[0, 0, 0]} 
+              intensity={0.5} 
+              distance={10}
+              decay={2}
+            />
             <spotLight 
               position={[-5, 5, 5]} 
-              intensity={1.5} 
+              intensity={1.2} 
               color="#00ffff" 
               angle={0.3} 
               penumbra={1}
-              castShadow={false}
+              castShadow
+              shadow-mapSize={[512, 512]}
             />
             <spotLight 
               position={[5, -5, 5]} 
-              intensity={1.2} 
+              intensity={1.0} 
               color="#ff00ff" 
               angle={0.3} 
               penumbra={1}
-              castShadow={false}
+              castShadow
+              shadow-mapSize={[512, 512]}
+            />
+            <pointLight 
+              position={[-3, 0, -2]} 
+              intensity={0.3} 
+              color="#4444ff"
+              distance={8}
+              decay={2}
+            />
+            <pointLight 
+              position={[3, 0, -2]} 
+              intensity={0.3} 
+              color="#ff4444"
+              distance={8}
+              decay={2}
             />
 
             <Stars 

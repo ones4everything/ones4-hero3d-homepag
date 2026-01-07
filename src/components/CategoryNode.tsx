@@ -34,12 +34,16 @@ export function CategoryNode({ position, label, scrollProgress, index }: Categor
 
   return (
     <group ref={groupRef}>
-      <mesh castShadow={false} receiveShadow={false}>
+      <mesh castShadow receiveShadow>
         <sphereGeometry args={[0.08, 16, 16]} />
-        <meshBasicMaterial 
+        <meshStandardMaterial 
           color="#00ffff"
           transparent
           opacity={opacity}
+          emissive="#00ffff"
+          emissiveIntensity={0.5}
+          roughness={0.3}
+          metalness={0.8}
         />
       </mesh>
 
