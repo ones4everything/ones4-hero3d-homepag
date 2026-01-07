@@ -110,6 +110,8 @@ function VideoSphere({ scrollProgress }: { scrollProgress: number }) {
       ref={meshRef}
       onPointerOver={() => setIsHovered(true)}
       onPointerOut={() => setIsHovered(false)}
+      castShadow={false}
+      receiveShadow={false}
     >
       <sphereGeometry args={[1.5, isMobile ? 32 : 64, isMobile ? 32 : 64]} />
       <meshStandardMaterial
@@ -134,7 +136,7 @@ function WireframeFallback() {
   })
 
   return (
-    <mesh ref={meshRef}>
+    <mesh ref={meshRef} castShadow={false} receiveShadow={false}>
       <sphereGeometry args={[1.5, 32, 32]} />
       <meshBasicMaterial
         color={new THREE.Color("#00ffff")}

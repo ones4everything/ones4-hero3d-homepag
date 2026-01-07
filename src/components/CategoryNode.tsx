@@ -79,7 +79,7 @@ export function CategoryNode({ position, label, scrollProgress, index }: Categor
 
   return (
     <group ref={groupRef}>
-      <mesh>
+      <mesh castShadow={false} receiveShadow={false}>
         <sphereGeometry args={[0.05, 16, 16]} />
         <meshBasicMaterial 
           color={new THREE.Color("#00ffff")}
