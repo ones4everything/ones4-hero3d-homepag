@@ -2,7 +2,6 @@ import { useRef, useState } from 'react'
 import { useFrame } from '@react-three/fiber'
 import { Html } from '@react-three/drei'
 import * as THREE from 'three'
-import { Card } from '@/components/ui/card'
 
 interface Product {
   name: string
@@ -34,7 +33,7 @@ export function OrbitRing({ radius, products, scrollProgress, ringIndex }: Orbit
     }
   })
 
-  if (opacity === 0) return null
+  if (opacity === 0 || !products || products.length === 0) return null
 
   return (
     <group>
@@ -48,7 +47,7 @@ export function OrbitRing({ radius, products, scrollProgress, ringIndex }: Orbit
         />
       </mesh>
 
-      {products && products.length > 0 && products.map((product, index) => (
+      {products.map((product, index) => (
         <ProductCallout
           key={`${product.name}-${index}`}
           product={product}
@@ -72,7 +71,7 @@ function ProductCallout({ product, radius, opacity, scrollProgress }: ProductCal
   const [isExpanded, setIsExpanded] = useState(false)
   const groupRef = useRef<THREE.Group>(null)
 
-  const angle = product ? product.angle + scrollProgress * Math.PI * 0.3 : 0
+  const angle = (product?.angle ?? 0) + scrollProgress * Math.PI * 0.3
   const x = Math.cos(angle) * radius
   const z = Math.sin(angle) * radius
 
@@ -83,7 +82,7 @@ function ProductCallout({ product, radius, opacity, scrollProgress }: ProductCal
     }
   })
 
-  if (!product || opacity === 0) return null
+  if (!product || !product.name || opacity === 0) return null
 
   return (
     <group ref={groupRef}>
@@ -91,13 +90,15 @@ function ProductCallout({ product, radius, opacity, scrollProgress }: ProductCal
         center
         distanceFactor={6}
         zIndexRange={[0, 0]}
-        style={{ opacity }}
+        style={{ opacity, pointerEvents: opacity > 0.5 ? 'auto' : 'none' }}
+        transform={false}
+        sprite={false}
       >
-        <Card
+        <div
           className={`
             transition-all duration-300 cursor-pointer
             ${isExpanded ? 'w-64 p-6 neon-glow' : 'w-48 p-4'}
-            bg-card/90 backdrop-blur-md border-primary/30
+            bg-card/90 backdrop-blur-md border border-primary/30 rounded-lg
             hover:scale-105 hover:neon-glow
           `}
           onMouseEnter={() => setIsExpanded(true)}
@@ -126,7 +127,7 @@ function ProductCallout({ product, radius, opacity, scrollProgress }: ProductCal
               </>
             )}
           </div>
-        </Card>
+        </div>
       </Html>
     </group>
   )

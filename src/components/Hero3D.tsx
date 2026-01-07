@@ -99,7 +99,7 @@ export function Hero3D() {
               />
             ))}
 
-            {products && products.length > 0 && (
+            {products.length > 0 && (
               <>
                 <OrbitRing 
                   radius={2.5} 
