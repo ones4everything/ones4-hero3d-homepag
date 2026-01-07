@@ -72,7 +72,6 @@ export function Hero3D() {
             gl={{ antialias: true, alpha: true }}
             dpr={[1, 2]}
           >
-            <color attach="background" args={['#000000']} />
             
             <ambientLight intensity={0.2} />
             <directionalLight position={[10, 10, 5]} intensity={2.0} castShadow />

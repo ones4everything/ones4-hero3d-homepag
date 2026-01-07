@@ -71,8 +71,8 @@ export function CategoryNode({ position, label, scrollProgress, index }: Categor
       <mesh>
         <sphereGeometry args={[0.05, 16, 16]} />
         <meshBasicMaterial 
-          color="#00ffff" 
-          transparent
+          color={new THREE.Color("#00ffff")}
+          transparent={true}
           opacity={opacity}
         />
       </mesh>
