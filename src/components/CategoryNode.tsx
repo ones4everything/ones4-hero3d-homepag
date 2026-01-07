@@ -34,7 +34,7 @@ export function CategoryNode({ position, label, scrollProgress, index }: Categor
 
   return (
     <group ref={groupRef}>
-      <mesh>
+      <mesh castShadow={false} receiveShadow={false}>
         <sphereGeometry args={[0.08, 16, 16]} />
         <meshBasicMaterial 
           color="#00ffff"

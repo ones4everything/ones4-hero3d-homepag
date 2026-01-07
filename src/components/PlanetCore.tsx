@@ -37,6 +37,7 @@ function VideoSphere({ scrollProgress }: { scrollProgress: number }) {
   const { viewport } = useThree()
 
   useEffect(() => {
+    let isMounted = true
     fallbackTexture.current = createGradientTexture()
     
     const video = document.createElement('video')
@@ -48,11 +49,8 @@ function VideoSphere({ scrollProgress }: { scrollProgress: number }) {
     video.setAttribute('webkit-playsinline', '')
     video.crossOrigin = 'anonymous'
     
-    let isMounted = true
-    
     video.onerror = () => {
       if (isMounted) {
-        console.warn('Video failed to load, using gradient fallback')
         setVideoError(true)
       }
     }
@@ -71,9 +69,8 @@ function VideoSphere({ scrollProgress }: { scrollProgress: number }) {
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     
     if (!prefersReducedMotion) {
-      video.play().catch(err => {
+      video.play().catch(() => {
         if (isMounted) {
-          console.warn('Video autoplay failed:', err)
           setVideoError(true)
         }
       })
@@ -88,15 +85,16 @@ function VideoSphere({ scrollProgress }: { scrollProgress: number }) {
       if (videoRef.current) {
         videoRef.current.pause()
         videoRef.current.src = ''
-        videoRef.current = null
       }
+      videoRef.current = null
+      
       if (videoTexture) {
         videoTexture.dispose()
       }
       if (fallbackTexture.current) {
         fallbackTexture.current.dispose()
-        fallbackTexture.current = null
       }
+      fallbackTexture.current = null
     }
   }, [])
 
@@ -121,10 +119,12 @@ function VideoSphere({ scrollProgress }: { scrollProgress: number }) {
       ref={meshRef}
       onPointerOver={() => setIsHovered(true)}
       onPointerOut={() => setIsHovered(false)}
+      castShadow={false}
+      receiveShadow={false}
     >
       <sphereGeometry args={[1.5, isMobile ? 32 : 64, isMobile ? 32 : 64]} />
       <meshStandardMaterial
-        map={textureToUse ?? undefined}
+        map={textureToUse || undefined}
         toneMapped={false}
         roughness={0.35}
         metalness={0.6}
@@ -145,7 +145,7 @@ function WireframeFallback() {
   })
 
   return (
-    <mesh ref={meshRef}>
+    <mesh ref={meshRef} castShadow={false} receiveShadow={false}>
       <sphereGeometry args={[1.5, 32, 32]} />
       <meshBasicMaterial
         color="#00ffff"
