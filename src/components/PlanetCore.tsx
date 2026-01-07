@@ -48,26 +48,34 @@ function VideoSphere({ scrollProgress }: { scrollProgress: number }) {
     video.setAttribute('webkit-playsinline', '')
     video.crossOrigin = 'anonymous'
     
+    let isMounted = true
+    
     video.onerror = () => {
-      console.warn('Video failed to load, using gradient fallback')
-      setVideoError(true)
+      if (isMounted) {
+        console.warn('Video failed to load, using gradient fallback')
+        setVideoError(true)
+      }
     }
     
     video.onloadeddata = () => {
-      const texture = new THREE.VideoTexture(video)
-      texture.minFilter = THREE.LinearFilter
-      texture.magFilter = THREE.LinearFilter
-      texture.format = THREE.RGBFormat
-      texture.colorSpace = THREE.SRGBColorSpace
-      setVideoTexture(texture)
+      if (isMounted) {
+        const texture = new THREE.VideoTexture(video)
+        texture.minFilter = THREE.LinearFilter
+        texture.magFilter = THREE.LinearFilter
+        texture.format = THREE.RGBFormat
+        texture.colorSpace = THREE.SRGBColorSpace
+        setVideoTexture(texture)
+      }
     }
     
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     
     if (!prefersReducedMotion) {
       video.play().catch(err => {
-        console.warn('Video autoplay failed:', err)
-        setVideoError(true)
+        if (isMounted) {
+          console.warn('Video autoplay failed:', err)
+          setVideoError(true)
+        }
       })
     } else {
       setVideoError(true)
@@ -76,15 +84,18 @@ function VideoSphere({ scrollProgress }: { scrollProgress: number }) {
     videoRef.current = video
 
     return () => {
-      if (video) {
-        video.pause()
-        video.src = ''
+      isMounted = false
+      if (videoRef.current) {
+        videoRef.current.pause()
+        videoRef.current.src = ''
+        videoRef.current = null
       }
       if (videoTexture) {
         videoTexture.dispose()
       }
       if (fallbackTexture.current) {
         fallbackTexture.current.dispose()
+        fallbackTexture.current = null
       }
     }
   }, [])
