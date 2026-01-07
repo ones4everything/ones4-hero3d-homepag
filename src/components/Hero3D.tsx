@@ -1,37 +1,29 @@
 import { useRef, useState, useEffect } from 'react'
-import { Canvas } from '@react-three/fiber'
-import { Stars, OrbitControls } from '@react-three/drei'
-import { PlanetCore } from './PlanetCore'
-import { CategoryNode } from './CategoryNode'
-import { OrbitRing } from './OrbitRing'
-import { FloatingText } from './FloatingText'
+import { motion, AnimatePresence } from 'framer-motion'
+import { Cube, Cpu, Monitor, CellSignalFull } from '@phosphor-icons/react'
+import { Card } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
 
 const categories = [
-  { label: 'Wearables', position: [-1.8, 0.8, 0] as [number, number, number] },
-  { label: 'Computing', position: [1.8, 0.8, 0] as [number, number, number] },
-  { label: 'Displays', position: [-1.8, -0.8, 0] as [number, number, number] },
-  { label: 'Components', position: [1.8, -0.8, 0] as [number, number, number] },
+  { label: 'Wearables', icon: Cube },
+  { label: 'Computing', icon: Cpu },
+  { label: 'Displays', icon: Monitor },
+  { label: 'Components', icon: CellSignalFull },
 ]
 
 const products = [
-  [
-    { name: 'Neural Link', description: 'Direct brain interface', price: '$2,499', angle: 0 },
-    { name: 'Quantum Core', description: 'Next-gen processor', price: '$4,999', angle: Math.PI * 0.66 },
-    { name: 'Holo Lens', description: 'AR/VR display system', price: '$1,899', angle: Math.PI * 1.33 },
-  ],
-  [
-    { name: 'Cyber Deck', description: 'Portable computing', price: '$3,299', angle: Math.PI * 0.5 },
-    { name: 'Nano Shield', description: 'Advanced protection', price: '$899', angle: Math.PI },
-    { name: 'Flux Drive', description: 'Quantum storage', price: '$1,499', angle: Math.PI * 1.5 },
-  ],
+  { name: 'Neural Link', description: 'Direct brain interface', price: '$2,499' },
+  { name: 'Quantum Core', description: 'Next-gen processor', price: '$4,999' },
+  { name: 'Holo Lens', description: 'AR/VR display system', price: '$1,899' },
+  { name: 'Cyber Deck', description: 'Portable computing', price: '$3,299' },
+  { name: 'Nano Shield', description: 'Advanced protection', price: '$899' },
+  { name: 'Flux Drive', description: 'Quantum storage', price: '$1,499' },
 ]
 
-const safeProducts = products.filter(ring => Array.isArray(ring) && ring.length > 0)
-
 const floatingTexts = [
-  { text: 'Immersive commerce hardware', start: 0.15, end: 0.35, direction: 'right' as const },
-  { text: 'AI-driven shopping', start: 0.4, end: 0.6, direction: 'left' as const },
-  { text: 'Classical meets quantum', start: 0.65, end: 0.85, direction: 'right' as const },
+  { text: 'Immersive commerce hardware', start: 0.15, end: 0.35 },
+  { text: 'AI-driven shopping', start: 0.4, end: 0.6 },
+  { text: 'Classical meets quantum', start: 0.65, end: 0.85 },
 ]
 
 export function Hero3D() {
@@ -59,135 +51,184 @@ export function Hero3D() {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
+  const showCategories = scrollProgress < 0.25
+  const showProducts = scrollProgress >= 0.25
+
   return (
-    <>
-      <div 
-        ref={containerRef}
-        className="relative w-full"
-        style={{ height: '450vh' }}
-      >
-        <div className="sticky top-0 left-0 w-full h-screen overflow-hidden">
-          <Canvas
-            camera={{ position: [0, 0, 5], fov: 50 }}
-            gl={{ antialias: true, alpha: true }}
-            dpr={[1, 2]}
-            shadows
-          >
-            <ambientLight intensity={0.15} />
-            <hemisphereLight 
-              color="#ffffff" 
-              groundColor="#000000" 
-              intensity={0.3}
-              position={[0, 1, 0]}
-            />
-            <directionalLight 
-              position={[10, 10, 5]} 
-              intensity={1.8} 
-              castShadow 
-              shadow-mapSize={[1024, 1024]}
-              shadow-camera-far={50}
-              shadow-camera-left={-10}
-              shadow-camera-right={10}
-              shadow-camera-top={10}
-              shadow-camera-bottom={-10}
-            />
-            <pointLight 
-              position={[0, 0, 0]} 
-              intensity={0.5} 
-              distance={10}
-              decay={2}
-            />
-            <spotLight 
-              position={[-5, 5, 5]} 
-              intensity={1.2} 
-              color="#00ffff" 
-              angle={0.3} 
-              penumbra={1}
-              castShadow
-              shadow-mapSize={[512, 512]}
-            />
-            <spotLight 
-              position={[5, -5, 5]} 
-              intensity={1.0} 
-              color="#ff00ff" 
-              angle={0.3} 
-              penumbra={1}
-              castShadow
-              shadow-mapSize={[512, 512]}
-            />
-            <pointLight 
-              position={[-3, 0, -2]} 
-              intensity={0.3} 
-              color="#4444ff"
-              distance={8}
-              decay={2}
-            />
-            <pointLight 
-              position={[3, 0, -2]} 
-              intensity={0.3} 
-              color="#ff4444"
-              distance={8}
-              decay={2}
-            />
-
-            <Stars 
-              radius={100} 
-              depth={50} 
-              count={5000}
-              factor={4} 
-              saturation={0} 
-              fade={true}
-            />
-
-            <PlanetCore scrollProgress={scrollProgress} />
-
-            {categories.map((category, index) => (
-              <CategoryNode
-                key={`category-${index}`}
-                position={category.position}
-                label={category.label}
-                scrollProgress={scrollProgress}
-                index={index}
-              />
-            ))}
-
-            {safeProducts.length > 0 && safeProducts[0] && (
-              <OrbitRing 
-                radius={2.5} 
-                products={safeProducts[0]} 
-                scrollProgress={scrollProgress}
-                ringIndex={0}
-              />
-            )}
-            {safeProducts.length > 1 && safeProducts[1] && (
-              <OrbitRing 
-                radius={3.2} 
-                products={safeProducts[1]} 
-                scrollProgress={scrollProgress}
-                ringIndex={1}
-              />
-            )}
-
-            <OrbitControls 
-              enableZoom={false} 
-              enablePan={false}
-              maxPolarAngle={Math.PI / 2}
-              minPolarAngle={Math.PI / 2}
-            />
-          </Canvas>
-
-          {floatingTexts.map((item, index) => (
-            <FloatingText
-              key={`floating-${index}`}
-              text={item.text}
-              scrollProgress={scrollProgress}
-              startProgress={item.start}
-              endProgress={item.end}
-              direction={item.direction}
-            />
-          ))}
+    <div 
+      ref={containerRef}
+      className="relative w-full"
+      style={{ height: '450vh' }}
+    >
+      <div className="sticky top-0 left-0 w-full h-screen overflow-hidden flex items-center justify-center">
+        <div 
+          className="absolute inset-0 bg-gradient-to-br from-deep-navy via-dark-blue to-black"
+          style={{
+            backgroundImage: `
+              radial-gradient(circle at 20% 30%, oklch(0.15 0.08 240 / 0.3), transparent 50%),
+              radial-gradient(circle at 80% 70%, oklch(0.70 0.14 200 / 0.15), transparent 50%),
+              radial-gradient(circle at 50% 50%, oklch(0.85 0.25 330 / 0.1), transparent 60%)
+            `
+          }}
+        >
+          <div className="absolute inset-0" style={{
+            backgroundImage: 'radial-gradient(circle, oklch(1 0 0 / 0.05) 1px, transparent 1px)',
+            backgroundSize: '50px 50px',
+            animation: 'twinkle 3s ease-in-out infinite'
+          }} />
         </div>
+
+        <motion.div
+          className="relative w-96 h-96 flex items-center justify-center"
+          initial={{ scale: 0.8, opacity: 0 }}
+          animate={{ 
+            scale: 1, 
+            opacity: 1,
+            rotateY: scrollProgress * 360,
+          }}
+          transition={{ duration: 0.8 }}
+        >
+          <div 
+            className="absolute inset-0 rounded-full"
+            style={{
+              background: 'radial-gradient(circle at 30% 30%, oklch(0.78 0.13 195), oklch(0.15 0.02 240))',
+              boxShadow: `
+                0 0 60px oklch(0.78 0.13 195 / 0.6),
+                0 0 120px oklch(0.70 0.14 200 / 0.3),
+                inset 0 0 80px oklch(0.15 0.02 240 / 0.8)
+              `,
+              animation: 'pulse 4s ease-in-out infinite'
+            }}
+          />
+          
+          <div className="relative z-10 text-center">
+            <motion.h2 
+              className="text-4xl font-bold text-glow mb-4"
+              animate={{ scale: [1, 1.05, 1] }}
+              transition={{ duration: 2, repeat: Infinity }}
+            >
+              ONES4
+            </motion.h2>
+          </div>
+        </motion.div>
+
+        <AnimatePresence>
+          {showCategories && (
+            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+              {categories.map((category, index) => {
+                const angle = (index / categories.length) * Math.PI * 2 - Math.PI / 2
+                const radius = 280
+                const x = Math.cos(angle) * radius
+                const y = Math.sin(angle) * radius
+                const Icon = category.icon
+
+                return (
+                  <motion.div
+                    key={category.label}
+                    initial={{ opacity: 0, scale: 0 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0 }}
+                    transition={{ 
+                      delay: index * 0.1,
+                      duration: 0.5
+                    }}
+                    className="absolute pointer-events-auto"
+                    style={{
+                      left: `calc(50% + ${x}px)`,
+                      top: `calc(50% + ${y}px)`,
+                      transform: 'translate(-50%, -50%)'
+                    }}
+                  >
+                    <Card className="p-4 bg-card/80 backdrop-blur-md border-cyan-blue/30 hover:border-neon-cyan transition-all hover:neon-glow">
+                      <div className="flex flex-col items-center gap-2">
+                        <Icon size={32} weight="regular" className="text-cyan-blue" />
+                        <span className="text-sm font-semibold">{category.label}</span>
+                      </div>
+                    </Card>
+                  </motion.div>
+                )
+              })}
+            </div>
+          )}
+
+          {showProducts && (
+            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+              {products.map((product, index) => {
+                const angle = (index / products.length) * Math.PI * 2 - Math.PI / 2
+                const radius = 300 + (index % 2) * 80
+                const x = Math.cos(angle) * radius
+                const y = Math.sin(angle) * radius
+
+                return (
+                  <motion.div
+                    key={product.name}
+                    initial={{ opacity: 0, scale: 0 }}
+                    animate={{ 
+                      opacity: 1, 
+                      scale: 1,
+                      rotate: scrollProgress * 60 * (index % 2 ? 1 : -1)
+                    }}
+                    exit={{ opacity: 0, scale: 0 }}
+                    transition={{ 
+                      delay: index * 0.08,
+                      duration: 0.5
+                    }}
+                    className="absolute pointer-events-auto group"
+                    style={{
+                      left: `calc(50% + ${x}px)`,
+                      top: `calc(50% + ${y}px)`,
+                      transform: 'translate(-50%, -50%)'
+                    }}
+                  >
+                    <Card className="p-4 min-w-[180px] bg-card/90 backdrop-blur-md border-primary/30 hover:border-accent transition-all hover:neon-glow hover:scale-110 cursor-pointer">
+                      <h3 className="text-sm font-bold mb-1">{product.name}</h3>
+                      <p className="text-xs text-muted-foreground mb-2">{product.description}</p>
+                      <Badge variant="secondary" className="text-xs">{product.price}</Badge>
+                    </Card>
+                  </motion.div>
+                )
+              })}
+            </div>
+          )}
+        </AnimatePresence>
+
+        {floatingTexts.map((item, index) => {
+          const isVisible = scrollProgress >= item.start && scrollProgress <= item.end
+          const textProgress = (scrollProgress - item.start) / (item.end - item.start)
+          const xOffset = (textProgress - 0.5) * 100
+
+          return (
+            <AnimatePresence key={index}>
+              {isVisible && (
+                <motion.div
+                  initial={{ opacity: 0, x: -50 }}
+                  animate={{ opacity: 1, x: xOffset }}
+                  exit={{ opacity: 0, x: 50 }}
+                  className="absolute top-1/4 left-1/2 -translate-x-1/2 pointer-events-none"
+                  style={{
+                    top: `${20 + index * 15}%`
+                  }}
+                >
+                  <p className="text-2xl md:text-3xl font-bold text-glow opacity-70">
+                    {item.text}
+                  </p>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          )
+        })}
       </div>
-    </>
+
+      <style>{`
+        @keyframes pulse {
+          0%, 100% { opacity: 0.8; transform: scale(1); }
+          50% { opacity: 1; transform: scale(1.02); }
+        }
+        @keyframes twinkle {
+          0%, 100% { opacity: 0.5; }
+          50% { opacity: 0.8; }
+        }
+      `}</style>
+    </div>
   )
 }
