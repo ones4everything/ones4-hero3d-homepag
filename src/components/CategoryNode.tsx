@@ -1,6 +1,6 @@
-import { useRef, useEffect } from 'react'
+import { useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
-import { Html, Line } from '@react-three/drei'
+import { Html } from '@react-three/drei'
 import * as THREE from 'three'
 
 interface CategoryNodeProps {
@@ -34,16 +34,8 @@ export function CategoryNode({ position, label, scrollProgress, index }: Categor
 
   return (
     <group ref={groupRef}>
-      <Line
-        points={[[0, 0, 0], position]}
-        color="#00ffff"
-        lineWidth={1}
-        transparent
-        opacity={opacity * 0.3}
-      />
-
       <mesh>
-        <sphereGeometry args={[0.05, 16, 16]} />
+        <sphereGeometry args={[0.08, 16, 16]} />
         <meshBasicMaterial 
           color="#00ffff"
           transparent
@@ -54,14 +46,14 @@ export function CategoryNode({ position, label, scrollProgress, index }: Categor
       <Html
         center
         distanceFactor={8}
-        position={[0, -0.2, 0]}
+        position={[0, -0.25, 0]}
         style={{ 
           opacity, 
           pointerEvents: 'none',
           userSelect: 'none'
         }}
       >
-        <div className="text-sm font-medium text-white whitespace-nowrap">
+        <div className="text-sm font-medium text-white whitespace-nowrap bg-black/50 px-3 py-1 rounded-full border border-cyan-500/30">
           {label}
         </div>
       </Html>
