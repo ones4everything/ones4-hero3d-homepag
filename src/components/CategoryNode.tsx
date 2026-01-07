@@ -1,6 +1,6 @@
 import { useRef, useMemo, useEffect } from 'react'
 import { useFrame, useThree } from '@react-three/fiber'
-import { Text } from '@react-three/drei'
+import { Html } from '@react-three/drei'
 import * as THREE from 'three'
 
 interface CategoryNodeProps {
@@ -31,6 +31,8 @@ export function CategoryNode({ position, label, scrollProgress, index }: Categor
   }, [position])
 
   useEffect(() => {
+    if (!scene) return
+    
     const material = new THREE.LineBasicMaterial({ 
       color: 0x00ffff, 
       transparent: true,
@@ -41,7 +43,9 @@ export function CategoryNode({ position, label, scrollProgress, index }: Categor
     scene.add(line)
     
     return () => {
-      scene.remove(line)
+      if (scene && line) {
+        scene.remove(line)
+      }
       geometry.dispose()
       material.dispose()
     }
@@ -77,16 +81,20 @@ export function CategoryNode({ position, label, scrollProgress, index }: Categor
         />
       </mesh>
 
-      <Text
+      <Html
+        center
+        distanceFactor={8}
         position={[0, -0.2, 0]}
-        fontSize={0.12}
-        color="#ffffff"
-        anchorX="center"
-        anchorY="middle"
-        fillOpacity={opacity}
+        style={{ 
+          opacity, 
+          pointerEvents: 'none',
+          userSelect: 'none'
+        }}
       >
-        {label}
-      </Text>
+        <div className="text-sm font-medium text-white whitespace-nowrap">
+          {label}
+        </div>
+      </Html>
     </group>
   )
 }

@@ -108,16 +108,16 @@ function VideoSphere({ scrollProgress }: { scrollProgress: number }) {
   return (
     <mesh 
       ref={meshRef}
-      onPointerEnter={() => setIsHovered(true)}
-      onPointerLeave={() => setIsHovered(false)}
+      onPointerOver={() => setIsHovered(true)}
+      onPointerOut={() => setIsHovered(false)}
     >
       <sphereGeometry args={[1.5, isMobile ? 32 : 64, isMobile ? 32 : 64]} />
       <meshStandardMaterial
-        map={textureToUse || undefined}
+        map={textureToUse ?? undefined}
         toneMapped={false}
         roughness={0.35}
         metalness={0.6}
-        emissive={new THREE.Color("#ffffff")}
+        emissive="#ffffff"
         emissiveIntensity={0.4}
       />
     </mesh>
@@ -137,7 +137,7 @@ function WireframeFallback() {
     <mesh ref={meshRef}>
       <sphereGeometry args={[1.5, 32, 32]} />
       <meshBasicMaterial
-        color={new THREE.Color("#00ffff")}
+        color="#00ffff"
         wireframe={true}
         opacity={0.3}
         transparent={true}
