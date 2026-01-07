@@ -38,11 +38,11 @@ export function OrbitRing({ radius, products, scrollProgress, ringIndex }: Orbit
 
   return (
     <group>
-      <mesh ref={ringRef} rotation={[Math.PI / 2, 0, 0]} castShadow={false} receiveShadow={false}>
+      <mesh ref={ringRef} rotation={[Math.PI / 2, 0, 0]}>
         <torusGeometry args={[radius, 0.01, 16, 64]} />
         <meshBasicMaterial 
-          color={new THREE.Color("#00ffff")}
-          transparent={true}
+          color="#00ffff"
+          transparent
           opacity={opacity * 0.3}
           toneMapped={false}
         />

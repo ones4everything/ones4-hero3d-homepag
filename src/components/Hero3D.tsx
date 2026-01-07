@@ -73,9 +73,9 @@ export function Hero3D() {
             dpr={[1, 2]}
           >
             <ambientLight intensity={0.2} />
-            <directionalLight position={[10, 10, 5]} intensity={2.0} castShadow={true} />
-            <spotLight position={[-5, 5, 5]} intensity={1.5} color="#00ffff" angle={0.3} penumbra={1} castShadow={false} />
-            <spotLight position={[5, -5, 5]} intensity={1.2} color="#ff00ff" angle={0.3} penumbra={1} castShadow={false} />
+            <directionalLight position={[10, 10, 5]} intensity={2.0} castShadow />
+            <spotLight position={[-5, 5, 5]} intensity={1.5} color="#00ffff" angle={0.3} penumbra={1} />
+            <spotLight position={[5, -5, 5]} intensity={1.2} color="#ff00ff" angle={0.3} penumbra={1} />
 
             <Stars 
               radius={100} 
