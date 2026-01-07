@@ -13,6 +13,8 @@ interface CategoryNodeProps {
 export function CategoryNode({ position, label, scrollProgress, index }: CategoryNodeProps) {
   const groupRef = useRef<THREE.Group>(null)
   const lineRef = useRef<THREE.Line | null>(null)
+  const materialRef = useRef<THREE.LineBasicMaterial | null>(null)
+  const geometryRef = useRef<THREE.BufferGeometry | null>(null)
   const { scene } = useThree()
 
   const fadeOutStart = 0.05 + (index * 0.05)
@@ -22,34 +24,42 @@ export function CategoryNode({ position, label, scrollProgress, index }: Categor
                   scrollProgress > fadeOutEnd ? 0 :
                   1 - ((scrollProgress - fadeOutStart) / (fadeOutEnd - fadeOutStart))
 
-  const geometry = useMemo(() => {
-    const points = [
-      new THREE.Vector3(0, 0, 0),
-      new THREE.Vector3(position[0], position[1], position[2])
-    ]
-    return new THREE.BufferGeometry().setFromPoints(points)
-  }, [position])
+  const linePoints = useMemo(() => [
+    new THREE.Vector3(0, 0, 0),
+    new THREE.Vector3(position[0], position[1], position[2])
+  ], [position])
 
   useEffect(() => {
     if (!scene) return
     
+    const geometry = new THREE.BufferGeometry().setFromPoints(linePoints)
     const material = new THREE.LineBasicMaterial({ 
       color: 0x00ffff, 
       transparent: true,
       opacity: 0.3
     })
     const line = new THREE.Line(geometry, material)
+    
+    geometryRef.current = geometry
+    materialRef.current = material
     lineRef.current = line
     scene.add(line)
     
     return () => {
-      if (scene && line) {
-        scene.remove(line)
+      if (lineRef.current) {
+        scene.remove(lineRef.current)
+        lineRef.current = null
       }
-      geometry.dispose()
-      material.dispose()
+      if (materialRef.current) {
+        materialRef.current.dispose()
+        materialRef.current = null
+      }
+      if (geometryRef.current) {
+        geometryRef.current.dispose()
+        geometryRef.current = null
+      }
     }
-  }, [geometry, scene])
+  }, [linePoints, scene])
 
   useFrame(() => {
     if (groupRef.current) {
@@ -59,11 +69,8 @@ export function CategoryNode({ position, label, scrollProgress, index }: Categor
         position[2]
       )
     }
-    if (lineRef.current) {
-      const material = lineRef.current.material as THREE.LineBasicMaterial
-      if (material) {
-        material.opacity = opacity * 0.3
-      }
+    if (lineRef.current && materialRef.current) {
+      materialRef.current.opacity = opacity * 0.3
       lineRef.current.visible = opacity > 0
     }
   })

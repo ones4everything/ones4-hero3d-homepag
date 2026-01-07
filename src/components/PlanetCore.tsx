@@ -117,7 +117,7 @@ function VideoSphere({ scrollProgress }: { scrollProgress: number }) {
         toneMapped={false}
         roughness={0.35}
         metalness={0.6}
-        emissive="#ffffff"
+        emissive={new THREE.Color("#ffffff")}
         emissiveIntensity={0.4}
       />
     </mesh>
@@ -137,7 +137,7 @@ function WireframeFallback() {
     <mesh ref={meshRef}>
       <sphereGeometry args={[1.5, 32, 32]} />
       <meshBasicMaterial
-        color="#00ffff"
+        color={new THREE.Color("#00ffff")}
         wireframe={true}
         opacity={0.3}
         transparent={true}
