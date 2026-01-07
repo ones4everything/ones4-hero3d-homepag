@@ -62,9 +62,12 @@ export function Header() {
               size={20} 
               weight="regular"
               className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground"
+              aria-hidden="true"
             />
             <Input
               type="search"
+              id="main-search"
+              name="search"
               placeholder="Search..."
               className="pl-12 pr-12 h-10 bg-secondary/50 border-input focus:border-accent focus:neon-glow rounded-full transition-all"
               aria-label="Search products"
