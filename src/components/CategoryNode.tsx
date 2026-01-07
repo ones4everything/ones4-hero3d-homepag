@@ -1,6 +1,6 @@
-import { useRef } from 'react'
+import { useRef, useMemo } from 'react'
 import { useFrame } from '@react-three/fiber'
-import { Text } from '@react-three/drei'
+import { Text, Line } from '@react-three/drei'
 import * as THREE from 'three'
 
 interface CategoryNodeProps {
@@ -30,21 +30,22 @@ export function CategoryNode({ position, label, scrollProgress, index }: Categor
     }
   })
 
+  const linePoints = useMemo(() => [
+    [0, 0, 0] as [number, number, number],
+    position
+  ], [position])
+
   if (opacity === 0) return null
-
-  const points: THREE.Vector3[] = []
-  points.push(new THREE.Vector3(0, 0, 0))
-  points.push(new THREE.Vector3(position[0], position[1], position[2]))
-
-  const lineGeometry = new THREE.BufferGeometry().setFromPoints(points)
 
   return (
     <>
-      <primitive object={new THREE.Line(lineGeometry, new THREE.LineBasicMaterial({ 
-        color: '#00ffff',
-        transparent: true,
-        opacity: opacity * 0.3
-      }))} />
+      <Line
+        points={linePoints}
+        color="#00ffff"
+        lineWidth={1}
+        transparent
+        opacity={opacity * 0.3}
+      />
 
       <group ref={groupRef}>
         <mesh>
