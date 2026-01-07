@@ -26,6 +26,8 @@ const products = [
   ],
 ]
 
+const safeProducts = products.filter(ring => Array.isArray(ring) && ring.length > 0)
+
 const floatingTexts = [
   { text: 'Immersive commerce hardware', start: 0.15, end: 0.35, direction: 'right' as const },
   { text: 'AI-driven shopping', start: 0.4, end: 0.6, direction: 'left' as const },
@@ -99,21 +101,21 @@ export function Hero3D() {
               />
             ))}
 
-            {products.length > 0 && (
-              <>
-                <OrbitRing 
-                  radius={2.5} 
-                  products={products[0]} 
-                  scrollProgress={scrollProgress}
-                  ringIndex={0}
-                />
-                <OrbitRing 
-                  radius={3.2} 
-                  products={products[1]} 
-                  scrollProgress={scrollProgress}
-                  ringIndex={1}
-                />
-              </>
+            {safeProducts.length > 0 && safeProducts[0] && (
+              <OrbitRing 
+                radius={2.5} 
+                products={safeProducts[0]} 
+                scrollProgress={scrollProgress}
+                ringIndex={0}
+              />
+            )}
+            {safeProducts.length > 1 && safeProducts[1] && (
+              <OrbitRing 
+                radius={3.2} 
+                products={safeProducts[1]} 
+                scrollProgress={scrollProgress}
+                ringIndex={1}
+              />
             )}
 
             <OrbitControls 

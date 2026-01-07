@@ -32,8 +32,9 @@ export function OrbitRing({ radius, products, scrollProgress, ringIndex }: Orbit
       ringRef.current.rotation.z = scrollProgress * Math.PI * 0.5
     }
   })
-
-  if (opacity === 0 || !products || !Array.isArray(products) || products.length === 0) return null
+  
+  if (!products || !Array.isArray(products) || products.length === 0) return null
+  if (opacity === 0) return null
 
   return (
     <group>
@@ -47,15 +48,18 @@ export function OrbitRing({ radius, products, scrollProgress, ringIndex }: Orbit
         />
       </mesh>
 
-      {products.filter(p => p && typeof p === 'object' && p.name).map((product, index) => (
-        <ProductCallout
-          key={`${product.name}-${index}`}
-          product={product}
-          radius={radius}
-          opacity={opacity}
-          scrollProgress={scrollProgress}
-        />
-      ))}
+      {products.filter(p => p && typeof p === 'object' && p.name).map((product, index) => {
+        if (!product || !product.name) return null
+        return (
+          <ProductCallout
+            key={`${product.name}-${index}`}
+            product={product}
+            radius={radius}
+            opacity={opacity}
+            scrollProgress={scrollProgress}
+          />
+        )
+      })}
     </group>
   )
 }
@@ -71,19 +75,19 @@ function ProductCallout({ product, radius, opacity, scrollProgress }: ProductCal
   const [isExpanded, setIsExpanded] = useState(false)
   const groupRef = useRef<THREE.Group>(null)
 
-  const safeProduct = product || { name: '', description: '', price: '', angle: 0 }
-  const angle = (safeProduct.angle ?? 0) + scrollProgress * Math.PI * 0.3
+  const isValid = product && product.name
+  const angle = isValid ? ((product.angle ?? 0) + scrollProgress * Math.PI * 0.3) : 0
   const x = Math.cos(angle) * radius
   const z = Math.sin(angle) * radius
 
   useFrame(() => {
-    if (groupRef.current) {
+    if (groupRef.current && isValid) {
       groupRef.current.position.set(x, 0, z)
       groupRef.current.lookAt(0, 0, 0)
     }
   })
-
-  if (!product || !product.name || opacity === 0) return null
+  
+  if (!isValid || opacity === 0) return null
 
   const handleMouseEnter = () => setIsExpanded(true)
   const handleMouseLeave = () => setIsExpanded(false)
@@ -100,8 +104,7 @@ function ProductCallout({ product, radius, opacity, scrollProgress }: ProductCal
           pointerEvents: opacity > 0.5 ? 'auto' : 'none',
           userSelect: 'none'
         }}
-        prepend={false}
-        portal={undefined}
+        zIndexRange={[100, 0]}
       >
         <div
           className={`
