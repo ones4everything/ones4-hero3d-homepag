@@ -33,7 +33,7 @@ export function OrbitRing({ radius, products, scrollProgress, ringIndex }: Orbit
     }
   })
 
-  if (opacity === 0 || !products || products.length === 0) return null
+  if (opacity === 0 || !products || !Array.isArray(products) || products.length === 0) return null
 
   return (
     <group>
@@ -47,7 +47,7 @@ export function OrbitRing({ radius, products, scrollProgress, ringIndex }: Orbit
         />
       </mesh>
 
-      {products.map((product, index) => (
+      {products.filter(p => p && typeof p === 'object' && p.name).map((product, index) => (
         <ProductCallout
           key={`${product.name}-${index}`}
           product={product}
@@ -71,7 +71,8 @@ function ProductCallout({ product, radius, opacity, scrollProgress }: ProductCal
   const [isExpanded, setIsExpanded] = useState(false)
   const groupRef = useRef<THREE.Group>(null)
 
-  const angle = (product?.angle ?? 0) + scrollProgress * Math.PI * 0.3
+  const safeProduct = product || { name: '', description: '', price: '', angle: 0 }
+  const angle = (safeProduct.angle ?? 0) + scrollProgress * Math.PI * 0.3
   const x = Math.cos(angle) * radius
   const z = Math.sin(angle) * radius
 
@@ -84,15 +85,23 @@ function ProductCallout({ product, radius, opacity, scrollProgress }: ProductCal
 
   if (!product || !product.name || opacity === 0) return null
 
+  const handleMouseEnter = () => setIsExpanded(true)
+  const handleMouseLeave = () => setIsExpanded(false)
+  const handleFocus = () => setIsExpanded(true)
+  const handleBlur = () => setIsExpanded(false)
+
   return (
     <group ref={groupRef}>
       <Html
         center
         distanceFactor={6}
-        zIndexRange={[0, 0]}
-        style={{ opacity, pointerEvents: opacity > 0.5 ? 'auto' : 'none' }}
-        transform={false}
-        sprite={false}
+        style={{ 
+          opacity, 
+          pointerEvents: opacity > 0.5 ? 'auto' : 'none',
+          userSelect: 'none'
+        }}
+        prepend={false}
+        portal={undefined}
       >
         <div
           className={`
@@ -101,10 +110,10 @@ function ProductCallout({ product, radius, opacity, scrollProgress }: ProductCal
             bg-card/90 backdrop-blur-md border border-primary/30 rounded-lg
             hover:scale-105 hover:neon-glow
           `}
-          onMouseEnter={() => setIsExpanded(true)}
-          onMouseLeave={() => setIsExpanded(false)}
-          onFocus={() => setIsExpanded(true)}
-          onBlur={() => setIsExpanded(false)}
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
+          onFocus={handleFocus}
+          onBlur={handleBlur}
           tabIndex={opacity > 0.5 ? 0 : -1}
           role="button"
           aria-label={`${product.name} - ${product.price}`}
