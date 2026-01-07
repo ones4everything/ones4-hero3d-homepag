@@ -31,8 +31,8 @@ export function CategoryNode({ position, label, scrollProgress, index }: Categor
   })
 
   const linePoints = useMemo(() => [
-    [0, 0, 0] as [number, number, number],
-    position
+    new THREE.Vector3(0, 0, 0),
+    new THREE.Vector3(position[0], position[1], position[2])
   ], [position])
 
   if (opacity === 0) return null
@@ -43,7 +43,7 @@ export function CategoryNode({ position, label, scrollProgress, index }: Categor
         points={linePoints}
         color="#00ffff"
         lineWidth={1}
-        transparent
+        transparent={true}
         opacity={opacity * 0.3}
       />
 

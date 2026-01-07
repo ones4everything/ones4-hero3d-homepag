@@ -80,9 +80,10 @@ export function Hero3D() {
             <Stars 
               radius={100} 
               depth={50} 
+              count={5000}
               factor={4} 
               saturation={0} 
-              fade 
+              fade={true}
               speed={1}
             />
 
@@ -90,7 +91,7 @@ export function Hero3D() {
 
             {categories.map((category, index) => (
               <CategoryNode
-                key={index}
+                key={`category-${index}`}
                 position={category.position}
                 label={category.label}
                 scrollProgress={scrollProgress}
@@ -98,18 +99,22 @@ export function Hero3D() {
               />
             ))}
 
-            <OrbitRing 
-              radius={2.5} 
-              products={products[0]} 
-              scrollProgress={scrollProgress}
-              ringIndex={0}
-            />
-            <OrbitRing 
-              radius={3.2} 
-              products={products[1]} 
-              scrollProgress={scrollProgress}
-              ringIndex={1}
-            />
+            {products && products.length > 0 && (
+              <>
+                <OrbitRing 
+                  radius={2.5} 
+                  products={products[0]} 
+                  scrollProgress={scrollProgress}
+                  ringIndex={0}
+                />
+                <OrbitRing 
+                  radius={3.2} 
+                  products={products[1]} 
+                  scrollProgress={scrollProgress}
+                  ringIndex={1}
+                />
+              </>
+            )}
 
             <OrbitControls 
               enableZoom={false} 
@@ -121,7 +126,7 @@ export function Hero3D() {
 
           {floatingTexts.map((item, index) => (
             <FloatingText
-              key={index}
+              key={`floating-${index}`}
               text={item.text}
               scrollProgress={scrollProgress}
               startProgress={item.start}

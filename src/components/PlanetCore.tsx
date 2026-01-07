@@ -34,6 +34,7 @@ function VideoSphere({ scrollProgress }: { scrollProgress: number }) {
   const [isHovered, setIsHovered] = useState(false)
   const hoverRotationRef = useRef(0)
   const fallbackTexture = useRef<THREE.Texture | null>(null)
+  const { viewport } = useThree()
 
   useEffect(() => {
     fallbackTexture.current = createGradientTexture()
@@ -75,10 +76,16 @@ function VideoSphere({ scrollProgress }: { scrollProgress: number }) {
     videoRef.current = video
 
     return () => {
-      video.pause()
-      if (videoTexture) videoTexture.dispose()
-      if (fallbackTexture.current) fallbackTexture.current.dispose()
-      video.src = ''
+      if (video) {
+        video.pause()
+        video.src = ''
+      }
+      if (videoTexture) {
+        videoTexture.dispose()
+      }
+      if (fallbackTexture.current) {
+        fallbackTexture.current.dispose()
+      }
     }
   }, [])
 
@@ -94,8 +101,7 @@ function VideoSphere({ scrollProgress }: { scrollProgress: number }) {
     }
   })
 
-  const { viewport } = useThree()
-  const isMobile = viewport.width < 768
+  const isMobile = viewport.width < 6
 
   const textureToUse = videoError || !videoTexture ? fallbackTexture.current : videoTexture
 

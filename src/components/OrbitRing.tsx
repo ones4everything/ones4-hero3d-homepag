@@ -38,18 +38,19 @@ export function OrbitRing({ radius, products, scrollProgress, ringIndex }: Orbit
 
   return (
     <group>
-      <mesh ref={ringRef} rotation={[Math.PI / 2, 0, 0]}>
+      <mesh ref={ringRef} rotation-x={Math.PI / 2}>
         <torusGeometry args={[radius, 0.01, 16, 64]} />
         <meshBasicMaterial 
           color="#00ffff" 
           transparent={true}
           opacity={opacity * 0.3}
+          toneMapped={false}
         />
       </mesh>
 
-      {products.map((product, index) => (
+      {products && products.length > 0 && products.map((product, index) => (
         <ProductCallout
-          key={index}
+          key={`${product.name}-${index}`}
           product={product}
           radius={radius}
           opacity={opacity}
@@ -71,7 +72,7 @@ function ProductCallout({ product, radius, opacity, scrollProgress }: ProductCal
   const [isExpanded, setIsExpanded] = useState(false)
   const groupRef = useRef<THREE.Group>(null)
 
-  const angle = product.angle + scrollProgress * Math.PI * 0.3
+  const angle = product ? product.angle + scrollProgress * Math.PI * 0.3 : 0
   const x = Math.cos(angle) * radius
   const z = Math.sin(angle) * radius
 
@@ -82,7 +83,7 @@ function ProductCallout({ product, radius, opacity, scrollProgress }: ProductCal
     }
   })
 
-  if (opacity === 0) return null
+  if (!product || opacity === 0) return null
 
   return (
     <group ref={groupRef}>
