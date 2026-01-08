@@ -1,37 +1,28 @@
 import { useRef, useState, useEffect } from 'react'
-import { Canvas } from '@react-three/fiber'
-import { Stars, OrbitControls } from '@react-three/drei'
-import { PlanetCore } from './PlanetCore'
-import { CategoryNode } from './CategoryNode'
-import { OrbitRing } from './OrbitRing'
-import { FloatingText } from './FloatingText'
+import { Card } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
 
 const categories = [
-  { label: 'Wearables', position: [-1.8, 0.8, 0] as [number, number, number] },
-  { label: 'Computing', position: [1.8, 0.8, 0] as [number, number, number] },
-  { label: 'Displays', position: [-1.8, -0.8, 0] as [number, number, number] },
-  { label: 'Components', position: [1.8, -0.8, 0] as [number, number, number] },
+  { label: 'Wearables', icon: '👓' },
+  { label: 'Computing', icon: '💻' },
+  { label: 'Displays', icon: '📺' },
+  { label: 'Components', icon: '⚙️' },
 ]
 
 const products = [
-  [
-    { name: 'Neural Link', description: 'Direct brain interface', price: '$2,499', angle: 0 },
-    { name: 'Quantum Core', description: 'Next-gen processor', price: '$4,999', angle: Math.PI * 0.66 },
-    { name: 'Holo Lens', description: 'AR/VR display system', price: '$1,899', angle: Math.PI * 1.33 },
-  ],
-  [
-    { name: 'Cyber Deck', description: 'Portable computing', price: '$3,299', angle: Math.PI * 0.5 },
-    { name: 'Nano Shield', description: 'Advanced protection', price: '$899', angle: Math.PI },
-    { name: 'Flux Drive', description: 'Quantum storage', price: '$1,499', angle: Math.PI * 1.5 },
-  ],
+  { name: 'Neural Link', description: 'Direct brain interface', price: '$2,499', category: 'Wearables' },
+  { name: 'Quantum Core', description: 'Next-gen processor', price: '$4,999', category: 'Computing' },
+  { name: 'Holo Lens', description: 'AR/VR display system', price: '$1,899', category: 'Displays' },
+  { name: 'Cyber Deck', description: 'Portable computing', price: '$3,299', category: 'Computing' },
+  { name: 'Nano Shield', description: 'Advanced protection', price: '$899', category: 'Components' },
+  { name: 'Flux Drive', description: 'Quantum storage', price: '$1,499', category: 'Components' },
 ]
 
-const safeProducts = products.filter(ring => Array.isArray(ring) && ring.length > 0)
-
 const floatingTexts = [
-  { text: 'Immersive commerce hardware', start: 0.15, end: 0.35, direction: 'right' as const },
-  { text: 'AI-driven shopping', start: 0.4, end: 0.6, direction: 'left' as const },
-  { text: 'Classical meets quantum', start: 0.65, end: 0.85, direction: 'right' as const },
+  'Immersive commerce hardware',
+  'AI-driven shopping',
+  'Classical meets quantum',
 ]
 
 export function Hero3D() {
@@ -64,128 +55,106 @@ export function Hero3D() {
       <div 
         ref={containerRef}
         className="relative w-full"
-        style={{ height: '450vh' }}
+        style={{ height: '300vh' }}
       >
         <div className="sticky top-0 left-0 w-full h-screen overflow-hidden">
-          <Canvas
-            camera={{ position: [0, 0, 5], fov: 50 }}
-            gl={{ antialias: true, alpha: true }}
-            dpr={[1, 2]}
-            shadows
-          >
-            <ambientLight intensity={0.15} />
-            <hemisphereLight 
-              color="#ffffff" 
-              groundColor="#000000" 
-              intensity={0.3}
-              position={[0, 1, 0]}
-            />
-            <directionalLight 
-              position={[10, 10, 5]} 
-              intensity={1.8} 
-              castShadow 
-              shadow-mapSize={[1024, 1024]}
-              shadow-camera-far={50}
-              shadow-camera-left={-10}
-              shadow-camera-right={10}
-              shadow-camera-top={10}
-              shadow-camera-bottom={-10}
-            />
-            <pointLight 
-              position={[0, 0, 0]} 
-              intensity={0.5} 
-              distance={10}
-              decay={2}
-            />
-            <spotLight 
-              position={[-5, 5, 5]} 
-              intensity={1.2} 
-              color="#00ffff" 
-              angle={0.3} 
-              penumbra={1}
-              castShadow
-              shadow-mapSize={[512, 512]}
-            />
-            <spotLight 
-              position={[5, -5, 5]} 
-              intensity={1.0} 
-              color="#ff00ff" 
-              angle={0.3} 
-              penumbra={1}
-              castShadow
-              shadow-mapSize={[512, 512]}
-            />
-            <pointLight 
-              position={[-3, 0, -2]} 
-              intensity={0.3} 
-              color="#4444ff"
-              distance={8}
-              decay={2}
-            />
-            <pointLight 
-              position={[3, 0, -2]} 
-              intensity={0.3} 
-              color="#ff4444"
-              distance={8}
-              decay={2}
-            />
+          <div className="absolute inset-0 bg-background">
+            <div className="absolute inset-0 opacity-20" style={{
+              backgroundImage: `radial-gradient(circle at 20% 50%, oklch(0.78 0.13 195) 0%, transparent 50%),
+                               radial-gradient(circle at 80% 50%, oklch(0.85 0.25 330) 0%, transparent 50%)`,
+            }} />
+            <div className="absolute inset-0 opacity-10" style={{
+              backgroundImage: `repeating-linear-gradient(0deg, transparent, transparent 2px, oklch(1 0 0 / 0.03) 2px, oklch(1 0 0 / 0.03) 4px)`,
+            }} />
+          </div>
 
-            <Stars 
-              radius={100} 
-              depth={50} 
-              count={5000}
-              factor={4} 
-              saturation={0} 
-              fade={true}
-            />
+          <div className="relative h-full flex flex-col items-center justify-center px-6">
+            <div 
+              className="mb-12 text-center transform transition-all duration-1000"
+              style={{
+                opacity: 1 - scrollProgress * 2,
+                transform: `translateY(${scrollProgress * -100}px) scale(${1 - scrollProgress * 0.3})`,
+              }}
+            >
+              <div className="relative inline-block">
+                <div 
+                  className="w-64 h-64 md:w-80 md:h-80 rounded-full mx-auto mb-8 relative overflow-hidden"
+                  style={{
+                    background: `conic-gradient(from ${scrollProgress * 360}deg, 
+                      oklch(0.78 0.13 195), 
+                      oklch(0.85 0.25 330), 
+                      oklch(0.78 0.13 195))`,
+                    boxShadow: '0 0 60px oklch(0.78 0.13 195), 0 0 120px oklch(0.85 0.25 330)',
+                    transform: `rotate(${scrollProgress * 360}deg)`,
+                  }}
+                >
+                  <div className="absolute inset-4 rounded-full bg-background flex items-center justify-center">
+                    <div className="text-6xl md:text-8xl font-bold text-glow">ONES4</div>
+                  </div>
+                </div>
+              </div>
 
-            <PlanetCore scrollProgress={scrollProgress} />
+              {floatingTexts.map((text, index) => {
+                const progress = Math.max(0, Math.min(1, (scrollProgress - index * 0.2) * 3))
+                return (
+                  <div
+                    key={index}
+                    className="text-xl md:text-2xl text-muted-foreground mb-2"
+                    style={{
+                      opacity: progress > 0.5 ? 1 - (progress - 0.5) * 2 : progress * 2,
+                      transform: `translateX(${index % 2 === 0 ? -20 + progress * 20 : 20 - progress * 20}px)`,
+                    }}
+                  >
+                    {text}
+                  </div>
+                )
+              })}
+            </div>
 
-            {categories.map((category, index) => (
-              <CategoryNode
-                key={`category-${index}`}
-                position={category.position}
-                label={category.label}
-                scrollProgress={scrollProgress}
-                index={index}
-              />
-            ))}
+            <div 
+              className="grid grid-cols-2 md:grid-cols-4 gap-4 w-full max-w-5xl transform transition-all duration-1000"
+              style={{
+                opacity: scrollProgress > 0.3 ? Math.min(1, (scrollProgress - 0.3) * 2) : 0,
+                transform: `translateY(${scrollProgress > 0.3 ? 0 : 50}px)`,
+              }}
+            >
+              {categories.map((category, index) => (
+                <Card 
+                  key={index}
+                  className="p-6 text-center bg-card/80 backdrop-blur-sm border-border hover:border-accent transition-all cursor-pointer group"
+                >
+                  <div className="text-4xl mb-2 group-hover:scale-110 transition-transform">{category.icon}</div>
+                  <div className="font-semibold">{category.label}</div>
+                </Card>
+              ))}
+            </div>
 
-            {safeProducts.length > 0 && safeProducts[0] && (
-              <OrbitRing 
-                radius={2.5} 
-                products={safeProducts[0]} 
-                scrollProgress={scrollProgress}
-                ringIndex={0}
-              />
-            )}
-            {safeProducts.length > 1 && safeProducts[1] && (
-              <OrbitRing 
-                radius={3.2} 
-                products={safeProducts[1]} 
-                scrollProgress={scrollProgress}
-                ringIndex={1}
-              />
-            )}
-
-            <OrbitControls 
-              enableZoom={false} 
-              enablePan={false}
-              maxPolarAngle={Math.PI / 2}
-              minPolarAngle={Math.PI / 2}
-            />
-          </Canvas>
-
-          {floatingTexts.map((item, index) => (
-            <FloatingText
-              key={`floating-${index}`}
-              text={item.text}
-              scrollProgress={scrollProgress}
-              startProgress={item.start}
-              endProgress={item.end}
-              direction={item.direction}
-            />
-          ))}
+            <div 
+              className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-6xl mt-12 transform transition-all duration-1000"
+              style={{
+                opacity: scrollProgress > 0.6 ? Math.min(1, (scrollProgress - 0.6) * 2) : 0,
+                transform: `translateY(${scrollProgress > 0.6 ? 0 : 50}px)`,
+              }}
+            >
+              {products.map((product, index) => (
+                <Card 
+                  key={index}
+                  className="p-6 bg-card/80 backdrop-blur-sm border-border hover:border-accent transition-all group"
+                >
+                  <div className="flex items-start justify-between mb-3">
+                    <div>
+                      <h3 className="font-bold text-lg group-hover:text-accent transition-colors">{product.name}</h3>
+                      <p className="text-sm text-muted-foreground">{product.description}</p>
+                    </div>
+                    <Badge variant="outline" className="border-accent text-accent">{product.price}</Badge>
+                  </div>
+                  <Button className="w-full bg-primary hover:bg-accent transition-colors">
+                    View Details
+                  </Button>
+                </Card>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
     </>
