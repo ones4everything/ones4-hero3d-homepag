@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react'
-import { motion } from 'framer-motion'
+import { useIsMobile } from '@/hooks/u
 import { useIsMobile } from '@/hooks/use-mobile'
 
 interface ChapterMarkersProps {
   currentChapter: number
-  onChapterClick: (chapter: number) => void
-}
+
+ 
 
 const chapters = [
   { id: 0, season: 'Menu Categories', emoji: '🌸' },
@@ -19,8 +19,8 @@ export function ChapterMarkers({ currentChapter, onChapterClick }: ChapterMarker
   const [isVisible, setIsVisible] = useState(true)
   const [timeoutId, setTimeoutId] = useState<number | null>(null)
 
-  useEffect(() => {
-    const handleScroll = () => {
+      }
+      const newTimeoutId = windo
       setIsVisible(true)
       
       if (timeoutId !== null) {
@@ -28,7 +28,7 @@ export function ChapterMarkers({ currentChapter, onChapterClick }: ChapterMarker
       }
 
       const newTimeoutId = window.setTimeout(() => {
-        setIsVisible(false)
+      if (timeoutId !== nul
       }, 2000)
 
       setTimeoutId(newTimeoutId)
@@ -40,46 +40,46 @@ export function ChapterMarkers({ currentChapter, onChapterClick }: ChapterMarker
       if (timeoutId !== null) {
         clearTimeout(timeoutId)
       }
-      window.removeEventListener('scroll', handleScroll)
-    }
+        {chapters.map((chapter) => (
+     
   }, [timeoutId])
 
-  if (isMobile) {
-    return (
-      <motion.div
-        className="fixed bottom-8 left-1/2 -translate-x-1/2 z-40 flex items-center gap-3 px-4 py-3 rounded-full bg-card/80 backdrop-blur-md border border-border"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: isVisible ? 1 : 0.3, y: 0 }}
-        transition={{ duration: 0.3 }}
-      >
-        {chapters.map((chapter) => (
-          <button
-            key={chapter.id}
-            onClick={() => onChapterClick(chapter.id)}
-            className="relative group"
-            aria-label={`Go to ${chapter.season} chapter`}
-          >
-            <motion.div
-              className={`w-10 h-10 rounded-full flex items-center justify-center transition-all ${
-                currentChapter === chapter.id
-                  ? 'bg-primary text-primary-foreground scale-110'
-                  : 'bg-muted text-muted-foreground hover:bg-accent hover:text-accent-foreground'
-              }`}
-              whileTap={{ scale: 0.9 }}
-            >
-              <span className="text-xl">{chapter.emoji}</span>
-            </motion.div>
-            
-            <div className="absolute -top-10 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
-              <div className="bg-popover text-popover-foreground text-xs px-2 py-1 rounded whitespace-nowrap">
-                {chapter.season}
-              </div>
-            </div>
-          </button>
-        ))}
-      </motion.div>
-    )
+      </motion.di
   }
+  return (
+      className="fixed right-8 top-1/2 -translate-y-1/2 z-40 flex flex-col items-center gap-4 px-3 py-4 rounded-full bg-card/80 backdrop-blur-md border border-bo
+      animate={{ opacity: isVisible ? 1
+    >
+        <button
+       
+          aria-label={`Go to ${chapt
+          <motion
+              currentChapter
+                : 'bg-muted text-muted-foreground hove
+            whileTap={{ scale: 0.9 }}
+            <span className="text-2xl">{chapter.emoji}</sp
+          
+            <div classN
+            </div>
+        </button>
+    </motion.div>
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   return (
     <motion.div
