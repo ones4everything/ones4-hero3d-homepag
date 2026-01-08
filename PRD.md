@@ -1,149 +1,169 @@
-# ONES4 Hero3D Homepage - Product Requirements Document
+# Planning Guide
 
-An immersive e-commerce homepage centered around a 3D video-textured planet sphere with scroll-driven product reveal animations, creating a futuristic shopping experience.
+An immersive e-commerce platform featuring a scroll-driven 3D orbital camera system that seamlessly transitions through four seasonal shopping experiences, each offering distinct product categories with dynamic lighting and atmospheric effects.
 
 **Experience Qualities**:
-1. **Immersive** - Users journey through a cosmic space with a central planet that morphs through seasons, making product discovery feel like exploration
-2. **Fluid** - Scroll-driven animations create seamless transitions from category overview to product details with smooth parallax effects
-3. **Premium** - Dark cyberpunk aesthetic with neon accents and glowing effects conveys high-end technology products
+1. **Cinematic** - Every scroll movement feels like navigating through a meticulously crafted film sequence, with smooth camera motion and dramatic seasonal transitions
+2. **Intuitive** - The vertical scroll naturally maps to orbital rotation, creating an immediately understandable spatial metaphor that requires zero learning curve
+3. **Immersive** - Rich atmospheric effects, dynamic lighting, and seasonal ambiance transport users through distinct shopping environments that feel alive and reactive
 
 **Complexity Level**: Complex Application (advanced functionality, likely with multiple views)
-This is a sophisticated 3D web experience requiring Three.js rendering, video texture management, scroll-based animation orchestration, responsive optimizations, and accessibility considerations across multiple interaction states.
+This requires sophisticated 3D rendering with Three.js, real-time scroll interpolation, multi-station state management, dynamic lighting systems, particle effects, seamless UI crossfades, and precise mathematical mapping of scroll progress to camera orbit and seasonal blending.
 
 ## Essential Features
 
-### Video-Textured Planet Sphere
-- **Functionality**: Central 3D sphere with looping video texture showing season morphs (Moon → Sun → Moon cycle)
-- **Purpose**: Creates an eye-catching hero element that communicates the brand's futuristic, immersive commerce vision
-- **Trigger**: Automatically loads and plays on page load with Suspense fallback
-- **Progression**: Video loads → Wireframe placeholder displays → Video texture applies → Continuous loop plays while sphere rotation responds to scroll
-- **Success criteria**: Video loops smoothly, sphere rotates only with scroll movement (stops when scroll stops), mobile autoplay works with muted/playsInline attributes
+**Scroll-Driven Orbital Camera**
+- Functionality: Vertical scroll controls camera position along a perfect circular orbit (360°) around a centered hero product, with bidirectional movement and constant radius
+- Purpose: Creates a tangible sense of spatial exploration while maintaining consistent focus on the central product
+- Trigger: User scrolls page vertically
+- Progression: User scrolls down → scrollProgress calculates (scrollY / scrollMax) → angle updates (progress × 2π) → camera position lerps to new orbital coordinates → smooth easing prevents jitter
+- Success criteria: Camera maintains constant orbit radius, smooth 60fps motion, no stuttering, scroll up reverses smoothly
 
-### Scroll-Driven Content Reveal
-- **Functionality**: Initial 4 category cards transition to 4 orbiting product callouts as user scrolls through 450vh container
-- **Purpose**: Guides users from broad categories to specific products through an engaging narrative journey
-- **Trigger**: User scrolls down from initial viewport
-- **Progression**: Categories visible at top → User scrolls → Categories fade out one-by-one → Orbit rings expand → Products appear one-by-one on orbits
-- **Success criteria**: Staggered animations feel smooth, scroll progress directly controls transition states, no abrupt pop-ins
+**Seasonal Station System (Spring/Summer/Fall/Winter)**
+- Functionality: Four distinct shopping experiences mapped to scroll quarters (0-25%, 25-50%, 50-75%, 75-100%), each with unique lighting, atmosphere, UI overlays, and product collections
+- Purpose: Organizes product discovery into memorable seasonal contexts that enhance browsing engagement
+- Trigger: scrollProgress crosses station boundaries (0.25, 0.5, 0.75)
+- Progression: Scroll enters station range → seasonIndex calculates floor(progress × 4) → seasonBlend calculates fract(progress × 4) → lighting/fog/particles lerp between adjacent seasons → UI content crossfades in/out → product data updates
+- Success criteria: Exact station boundaries at 0%, 25%, 50%, 75%, 100%; smooth lighting transitions; UI appears only in designated ranges; no visual popping
 
-### Interactive Product Callouts
-- **Functionality**: Mini product cards orbit the planet, expanding on hover to show details
-- **Purpose**: Allows quick product browsing without leaving the immersive 3D environment
-- **Trigger**: Hover or keyboard focus on orbiting callout
-- **Progression**: User hovers callout → Card scales and glows → Full details appear (image, description, price) → User moves away → Card returns to mini state
-- **Success criteria**: Hover states are responsive, keyboard navigation works, ARIA labels present, focus visible states clear
+**Spring Station (0-25% / 0°-90°) - Categories**
+- Functionality: Display 4 category tiles (Men/Women/Kids/Accessories) with minimal, clean overlay design
+- Purpose: Initial product categorization for broad navigation
+- Trigger: scrollProgress < 0.25
+- Progression: User scrolls into Spring range → category cards fade in with stagger → hover reveals category details → click navigates to category
+- Success criteria: Cards visible only 0-25%, fade out by 25%, fresh green lighting active, soft bloom applied
 
-### Parallax Text Callouts
-- **Functionality**: Floating text phrases move across screen at different speeds/positions based on scroll
-- **Purpose**: Reinforces brand messaging and adds depth to the 3D scene
-- **Trigger**: Appears at specific scroll thresholds
-- **Progression**: Scroll reaches threshold → Text fades in → Parallax movement occurs → Fades out at next threshold
-- **Success criteria**: Never obscures central sphere or products, smooth transitions, respects reduced-motion preferences
+**Summer Station (25-50% / 90°-180°) - Seasonal Products**
+- Functionality: Display 3-6 curated seasonal product cards appropriate for Summer (swimwear, sunglasses, outdoor gear)
+- Purpose: Highlight timely, season-relevant merchandise
+- Trigger: 0.25 ≤ scrollProgress < 0.5
+- Progression: User scrolls to 25% → Spring fades out → Summer products fade in → bright lighting increases → user browses cards
+- Success criteria: Products visible only 25-50%, warm bright lighting, crisp shadows, higher saturation
 
-### Sticky Navigation Header
-- **Functionality**: Navigation bar with hamburger menu, logo, search with microphone icon, profile and cart
-- **Purpose**: Provides persistent access to core navigation and shopping functions
-- **Trigger**: Always visible, applies blur backdrop on scroll
-- **Progression**: Page loads → Header displays → User scrolls → Backdrop blur increases
-- **Success criteria**: Search bar glows on focus, microphone icon visible, all icons interactive, sticky positioning works
+**Fall Station (50-75% / 180°-270°) - Best Selling**
+- Functionality: Display best-selling products with ranking badges (#1, #2, #3) and star ratings
+- Purpose: Leverage social proof to drive conversions
+- Trigger: 0.5 ≤ scrollProgress < 0.75
+- Progression: User scrolls to 50% → Summer fades out → Best sellers fade in with rank badges → golden-hour lighting activates → optional leaf particles appear
+- Success criteria: Products visible only 50-75%, warm orange/red color grade, golden light, badges prominent
+
+**Winter Station (75-100% / 270°-360°) - Featured Products**
+- Functionality: Display featured products with larger hero card layout and prominent CTA button
+- Purpose: Showcase premium or promoted items with maximum visual impact
+- Trigger: scrollProgress ≥ 0.75
+- Progression: User scrolls to 75% → Fall fades out → Featured hero card appears → cool blue lighting activates → snow particles optional → CTA button prominent
+- Success criteria: Hero layout visible only 75-100%, cool blue grade, soft fog, CTA highly visible
+
+**Continuous Lighting & Atmosphere Interpolation**
+- Functionality: Real-time lerp of light color/intensity, fog density, environment tint, color grading based on seasonBlend value
+- Purpose: Eliminate jarring transitions, create seamless atmospheric flow
+- Trigger: scrollProgress changes
+- Progression: seasonBlend calculates → lighting.color lerps between current and next season colors → fog.density lerps → post-processing color grade interpolates → particle systems crossfade
+- Success criteria: No visual popping, smooth gradients between stations, 60fps maintained
 
 ## Edge Case Handling
 
-- **Video Load Failure**: Display cyan wireframe sphere fallback indefinitely with retry button
-- **Slow Networks**: Show Suspense fallback (wireframe) immediately, progressive video loading
-- **Mobile Performance**: Reduce sphere geometry to 32x32 segments, simplify orbit animations to slider on small screens
-- **Reduced Motion Preference**: Pause video or show static frame, disable orbit animations, maintain scroll-driven rotation at minimal speed
-- **Keyboard Navigation**: All interactive elements have focus states and logical tab order, orbiting callouts only focusable when visible
-- **Screen Readers**: ARIA labels on all controls, meaningful alt text, skip links to main content
-- **Touch Devices**: Ensure orbit callouts expand on tap, search microphone button works, no hover-dependent critical functionality
+- **Rapid Scrolling**: Implement velocity-based damping to prevent camera overshoot and ensure smooth catch-up without jitter
+- **Scroll Boundary Limits**: Clamp scrollProgress to [0, 1] to prevent out-of-range values breaking orbital math or station selection
+- **Initial Load Position**: Set scroll position to 0 and camera to 0° on mount to ensure consistent starting state
+- **Resize During Scroll**: Recalculate scrollMax on window resize to maintain accurate progress mapping
+- **Low Frame Rate Devices**: Use adaptive lerp factors based on deltaTime to maintain smooth motion even on slower devices
+- **Multiple Station Content**: Ensure only one station's UI is fully visible at boundaries by using opacity thresholds (< 0.01 = hidden)
+- **Particle System Performance**: Conditionally disable particles on mobile or low-end devices to maintain 60fps target
 
 ## Design Direction
 
-The design should evoke a premium cyberpunk aesthetic - futuristic, high-tech, and mysterious. Users should feel like they're browsing a cutting-edge technology marketplace in a sci-fi universe. The dark space theme with neon cyan/magenta accents creates dramatic contrast and focuses attention on the glowing planet and products.
+The design should evoke a sense of **luxury cinematography**, **spatial exploration**, and **seasonal poetry**. Users should feel they are navigating through a high-end film production where each season is a beautifully art-directed act. The 3D space should feel expansive yet focused, with the hero product acting as an anchor point. Lighting should be dramatic and painterly, with smooth gradients that feel natural rather than digital. UI overlays should be refined and minimal, never competing with the 3D atmosphere. The overall impression should be premium, effortless, and memorable.
 
 ## Color Selection
 
-A dark cyberpunk palette with electric neon accents for a premium tech aesthetic.
+The color scheme is seasonal-adaptive, with each station having its own distinct palette that interpolates smoothly during transitions.
 
-- **Primary Color**: Cyan Blue (oklch(0.78 0.13 195)) - Main interactive elements and primary calls-to-action, communicates innovation and technology
-- **Secondary Colors**: 
-  - Deep Navy (oklch(0.15 0.02 240)) - Primary background, provides depth without pure black
-  - Electric Teal (oklch(0.70 0.14 200)) - Secondary accents and hover states
-- **Accent Color**: Neon Cyan (oklch(0.95 0.20 195)) - Attention-grabbing glow effects on focus states, orbit rings, and active elements
-- **Foreground/Background Pairings**:
-  - Deep Navy (oklch(0.15 0.02 240)): White text (oklch(1 0 0)) - Ratio 11.8:1 ✓
-  - Cyan Blue (oklch(0.78 0.13 195)): Black text (oklch(0.15 0 0)) - Ratio 8.2:1 ✓
-  - Pure Black (oklch(0 0 0)): Muted White (oklch(1 0 0 / 0.7)) - Ratio 14.2:1 ✓
-  - Neon Cyan glow: Used only as box-shadow/border, not as background
+- **Spring Palette (Fresh Growth)**: Primary color `oklch(0.75 0.15 145)` soft green, accent `oklch(0.88 0.12 160)` warm mint, light cream backgrounds. Communicates renewal, clarity, gentle warmth.
+- **Summer Palette (Vibrant Energy)**: Primary color `oklch(0.82 0.20 80)` bright golden yellow, accent `oklch(0.70 0.25 40)` vivid orange, clear sky blues. Communicates vitality, heat, boldness.
+- **Fall Palette (Golden Hour)**: Primary color `oklch(0.68 0.18 50)` warm amber, accent `oklch(0.60 0.22 30)` deep rust, rich burgundy accents. Communicates warmth, nostalgia, harvest.
+- **Winter Palette (Cool Serenity)**: Primary color `oklch(0.80 0.08 240)` cool blue-white, accent `oklch(0.65 0.15 250)` ice blue, soft lavender. Communicates calm, purity, sophistication.
+
+**Foreground/Background Pairings**:
+- Spring: `oklch(0.15 0.02 145)` dark forest text on `oklch(0.95 0.05 145)` cream background - Ratio 12.3:1 ✓
+- Summer: `oklch(0.20 0.03 80)` deep brown text on `oklch(0.98 0.02 80)` warm white - Ratio 14.1:1 ✓
+- Fall: `oklch(0.18 0.02 50)` dark chestnut on `oklch(0.92 0.08 50)` warm beige - Ratio 11.8:1 ✓
+- Winter: `oklch(0.12 0.02 240)` deep navy on `oklch(0.96 0.03 240)` ice white - Ratio 15.2:1 ✓
 
 ## Font Selection
 
-Inter provides the clean, modern geometric aesthetic perfect for a tech-forward brand while maintaining excellent readability at all sizes for UI and product information.
+The typeface should convey **modern sophistication**, **technical precision**, and **editorial quality** to match the cinematic 3D experience.
 
-- **Typographic Hierarchy**:
-  - H1 (Hero Title): Inter Bold / 64px / -0.02em letter spacing / line-height 1.1
-  - H2 (Section Headers): Inter Semibold / 40px / -0.01em letter spacing / line-height 1.2
-  - H3 (Product Names): Inter Semibold / 28px / normal spacing / line-height 1.3
-  - Body (Descriptions): Inter Regular / 16px / normal spacing / line-height 1.6
-  - Caption (Labels, Prices): Inter Medium / 12px / 0.01em spacing / line-height 1.4
-  - Button Text: Inter Semibold / 14px / 0.02em spacing / uppercase
+- **Primary**: "Space Grotesk" - A geometric sans with technical character that feels contemporary without being cold
+- **Secondary**: "Inter" - For UI elements and body text where maximum legibility is required
+
+**Typographic Hierarchy**:
+- H1 (Station Titles): Space Grotesk Bold / 56px / tight (-0.02em) letter spacing / line-height 1.1
+- H2 (Product Names): Space Grotesk Semibold / 28px / normal spacing / line-height 1.3
+- H3 (Section Labels): Space Grotesk Medium / 18px / wide (0.05em) spacing / line-height 1.4
+- Body (Product Descriptions): Inter Regular / 16px / normal spacing / line-height 1.6
+- Small (Prices/Metadata): Inter Medium / 14px / normal spacing / line-height 1.5
 
 ## Animations
 
-Animations should feel physically grounded yet futuristic - smooth easing with momentum that respects real-world physics while adding subtle sci-fi flair. Balance functional scroll-driven transitions with delightful micro-interactions.
+Animations should balance **functional clarity** with **moments of delight**, using physics-based easing to create natural motion that enhances rather than distracts.
 
-- **Scroll-driven transitions**: Smooth easeInOut curves (0.3-0.5s) for category/product reveals
-- **Hover interactions**: Quick elastic scale (0.15s spring) with neon glow fade-in
-- **Orbit rotation**: Continuous smooth rotation tied directly to scroll position (no auto-rotation)
-- **Parallax text**: Linear movement at varying speeds (0.5x to 1.5x scroll speed)
-- **Video texture**: Continuous seamless loop independent of scroll state
-- **Suspense fallback**: Gentle pulse animation on wireframe sphere (1s cycle)
+**Camera Orbit Motion**: Use lerp with factor 0.08-0.12 for smooth trailing motion that feels responsive yet cinematic. Apply easeOutCubic for final positioning.
+
+**Station UI Crossfades**: Fade in new station content over 0.4s using easeInOutQuad when seasonBlend crosses 0.2 threshold. Fade out previous station over 0.3s with easeOutQuad.
+
+**Card Entrance**: Stagger product card appearances by 0.08s with translateY(40px) → 0 and opacity 0 → 1 over 0.5s easeOutCubic when station becomes active.
+
+**Lighting Transitions**: Continuous lerp of all lighting parameters (color, intensity, position) with no discrete keyframes - creates organic atmospheric flow.
+
+**Particle Systems**: Gentle perpetual motion with Perlin noise for natural drift. Fade in/out particles over 1.5s when crossing station boundaries.
+
+**Hover States**: Scale transform 1 → 1.05 over 0.2s easeOutBack for cards. Glow intensity 0 → 1 over 0.25s for buttons.
 
 ## Component Selection
 
 - **Components**:
-  - Button (shadcn): Search bar, CTA buttons with cyan accent variant and neon glow on focus
-  - Input (shadcn): Search field with custom microphone icon, neon border on focus
-  - Card (shadcn): Orbit product callouts and category cards with custom glassmorphic dark background
-  - Separator (shadcn): Footer sections with low opacity
-  - Sheet (shadcn): Mobile hamburger menu navigation
-  - Skeleton (shadcn): Loading states for product details on hover
-  
+  - `Card` - For all product cards and category tiles, with custom `backdrop-blur-md` and `bg-white/10` for glass morphism
+  - `Badge` - For ranking indicators (#1, #2, #3) and price tags, using `variant="secondary"` with seasonal color overrides
+  - `Button` - For CTAs, using `variant="default"` with custom seasonal accent colors and glow effects
+  - Three.js `Canvas` - Root 3D container with `camera` prop for orbital control
+  - `PerspectiveCamera` from drei - For manual camera positioning along orbit path
+  - `Environment` from drei - For lighting and reflections, intensity adjusted per season
+  - Custom `SeasonalLighting` component - Manages directional lights with interpolated colors
+  - Custom `ParticleSystem` component - Instanced mesh for leaves/snow with conditional rendering
+
 - **Customizations**:
-  - Custom 3D components: PlanetCore, OrbitRing, FloatingText, CategoryNode
-  - Video texture management with Three.js VideoTexture and Suspense
-  - Scroll progress hook for animation orchestration
-  - Canvas wrapper with responsive camera positioning
-  
+  - Custom `OrbitController` component - Manages scroll → camera position mapping with lerp smoothing
+  - Custom `StationUI` component - Handles content visibility and crossfades based on scrollProgress
+  - Custom `SeasonalAtmosphere` component - Controls fog, color grading, and environmental tint
+  - Tailwind extensions: `backdrop-blur-glass`, `text-glow-spring/summer/fall/winter` classes for seasonal text effects
+
 - **States**:
-  - Buttons: Default (cyan border), Hover (neon glow + scale 1.05), Active (scale 0.98), Focus (cyan ring), Disabled (50% opacity)
-  - Orbit Callouts: Mini (200px card), Hover/Focus (expanded with full details + glow), Loading (skeleton)
-  - Video Sphere: Loading (wireframe), Loaded (video texture), Error (wireframe + retry)
-  - Search Input: Default (transparent), Focus (neon cyan border + glow), Filled (white text)
-  
+  - Buttons: default (seasonal accent bg) / hover (scale 1.05, glow intensity +20%) / active (scale 0.98) / disabled (opacity 0.5, grayscale)
+  - Cards: default (glass morphism) / hover (border glow, scale 1.02, z-index lift) / active (maintains hover state)
+  - Inputs: Only for potential search/filter within stations - default (subtle border) / focus (seasonal accent border, glow)
+
 - **Icon Selection**:
-  - List (Hamburger menu) - Navigation drawer trigger
-  - MagnifyingGlass (Search) - Search functionality
-  - Microphone (Voice search) - Voice input trigger
-  - User (Profile) - Account access
-  - ShoppingCart (Cart) - Shopping cart access
-  - Package (Products) - Product categories
-  - Cpu (Computing) - Tech category
-  - DeviceMobile (Wearables) - Wearable category
-  - Desktop (Displays) - Display category
-  
+  - `Leaf` for Fall station indicators
+  - `Sun` for Summer station indicators  
+  - `Snowflake` for Winter station indicators
+  - `Flower` for Spring station indicators
+  - `ArrowRight` for CTA buttons
+  - `Star` filled for product ratings
+  - `Trophy` for best-seller badges
+  - `Tag` for category indicators
+
 - **Spacing**:
-  - Header padding: px-6 py-4 (24px horizontal, 16px vertical)
-  - Section gaps: gap-32 (128px between major sections)
-  - Card padding: p-6 (24px all sides for expanded state), p-4 (16px for mini state)
-  - Text margins: mb-8 (32px below headers), mb-4 (16px below subheaders)
-  - Icon sizes: 24px for header icons, 20px for card icons, 16px for inline icons
-  
+  - Container: `px-6 md:px-12 lg:px-24` for responsive horizontal padding
+  - Card Grid: `gap-6 md:gap-8` for product card layouts
+  - Card Internal: `p-6` standard padding for all cards
+  - Section Vertical: `mb-12 md:mb-16` between major sections
+  - Typography: `mb-4` for headings, `mb-2` for small labels
+
 - **Mobile**:
-  - Header: Collapse search bar to icon-only, reduce spacing to px-4
-  - Hero: Reduce sphere size by 40%, simplify to single orbit ring
-  - Orbit callouts: Transform to horizontal swipeable carousel below sphere
-  - Categories: Stack vertically with reduced size
-  - Footer: Single column layout with centered text
-  - Typography: Scale down by 20% (H1: 48px, H2: 32px, Body: 14px)
-  - Touch targets: Minimum 44x44px for all interactive elements
+  - Reduce orbit radius on mobile to keep hero product visible at smaller viewport widths
+  - Switch from grid-cols-3 to grid-cols-1 for product cards below 768px
+  - Disable particle systems on mobile to maintain 60fps performance
+  - Reduce lighting complexity (fewer shadow casters) on mobile
+  - Station titles use smaller font scale (H1: 36px on mobile vs 56px desktop)
+  - Touch scrolling should maintain smooth camera tracking with touch-specific damping factors
