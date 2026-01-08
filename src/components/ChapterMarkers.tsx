@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react'
-import { useIsMobile } from '@/hooks/u
 import { useIsMobile } from '@/hooks/use-mobile'
+import { motion } from 'framer-motion'
 
 interface ChapterMarkersProps {
   currentChapter: number
-
- 
+  onChapterClick: (id: number) => void
+}
 
 const chapters = [
   { id: 0, season: 'Menu Categories', emoji: '🌸' },
@@ -19,8 +19,8 @@ export function ChapterMarkers({ currentChapter, onChapterClick }: ChapterMarker
   const [isVisible, setIsVisible] = useState(true)
   const [timeoutId, setTimeoutId] = useState<number | null>(null)
 
-      }
-      const newTimeoutId = windo
+  useEffect(() => {
+    const handleScroll = () => {
       setIsVisible(true)
       
       if (timeoutId !== null) {
@@ -28,7 +28,7 @@ export function ChapterMarkers({ currentChapter, onChapterClick }: ChapterMarker
       }
 
       const newTimeoutId = window.setTimeout(() => {
-      if (timeoutId !== nul
+        setIsVisible(false)
       }, 2000)
 
       setTimeoutId(newTimeoutId)
@@ -37,35 +37,16 @@ export function ChapterMarkers({ currentChapter, onChapterClick }: ChapterMarker
     window.addEventListener('scroll', handleScroll)
 
     return () => {
+      window.removeEventListener('scroll', handleScroll)
       if (timeoutId !== null) {
         clearTimeout(timeoutId)
       }
-        {chapters.map((chapter) => (
-     
+    }
   }, [timeoutId])
 
-      </motion.di
+  if (isMobile) {
+    return null
   }
-  return (
-      className="fixed right-8 top-1/2 -translate-y-1/2 z-40 flex flex-col items-center gap-4 px-3 py-4 rounded-full bg-card/80 backdrop-blur-md border border-bo
-      animate={{ opacity: isVisible ? 1
-    >
-        <button
-       
-          aria-label={`Go to ${chapt
-          <motion
-              currentChapter
-                : 'bg-muted text-muted-foreground hove
-            whileTap={{ scale: 0.9 }}
-            <span className="text-2xl">{chapter.emoji}</sp
-          
-            <div classN
-            </div>
-        </button>
-    </motion.div>
-}
-
-
 
 
 
