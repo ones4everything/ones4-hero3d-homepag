@@ -73,6 +73,11 @@
   --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
 }
 
+html {
+  scroll-behavior: smooth;
+  scroll-snap-type: y mandatory;
+}
+
 body {
   font-family: var(--font-sans);
   background: var(--background);
@@ -95,4 +100,16 @@ body {
 .backdrop-blur-glass {
   backdrop-filter: blur(12px);
   background: oklch(0.15 0.02 240 / 0.8);
+}
+
+@keyframes float {
+  0% {
+    transform: translateY(0px) translateX(0px);
+  }
+  50% {
+    transform: translateY(-20px) translateX(10px);
+  }
+  100% {
+    transform: translateY(0px) translateX(0px);
+  }
 }
